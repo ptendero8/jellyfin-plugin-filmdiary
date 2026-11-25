@@ -1,0 +1,40 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>Jellyfin.Plugin.FilmDiary</RootNamespace>
+    <AssemblyVersion>0.1.1.0</AssemblyVersion>
+    <FileVersion>0.1.1.0</FileVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <!-- Si existe lib/ (DLL copiadas de tu instalación de Jellyfin), compila contra ellas.
+         Si no, usa los paquetes NuGet oficiales Jellyfin.Controller / Jellyfin.Model. -->
+    <JellyfinLibDir Condition="'$(JellyfinLibDir)' == ''">$(MSBuildThisFileDirectory)../../lib/</JellyfinLibDir>
+    <UseJellyfinNuGet Condition="'$(UseJellyfinNuGet)' == '' And !Exists('$(JellyfinLibDir)MediaBrowser.Common.dll')">true</UseJellyfinNuGet>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(UseJellyfinNuGet)' == 'true'">
+    <PackageReference Include="Jellyfin.Controller" Version="12.2.*" />
+    <PackageReference Include="Jellyfin.Model" Version="12.2.*" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(UseJellyfinNuGet)' != 'true'">
+    <Reference Include="MediaBrowser.Common"><HintPath>$(JellyfinLibDir)MediaBrowser.Common.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="MediaBrowser.Controller"><HintPath>$(JellyfinLibDir)MediaBrowser.Controller.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="MediaBrowser.Model"><HintPath>$(JellyfinLibDir)MediaBrowser.Model.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Jellyfin.Data"><HintPath>$(JellyfinLibDir)Jellyfin.Data.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Jellyfin.Extensions"><HintPath>$(JellyfinLibDir)Jellyfin.Extensions.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Jellyfin.Database.Implementations"><HintPath>$(JellyfinLibDir)Jellyfin.Database.Implementations.dll</HintPath><Private>false</Private></Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Web\filmdiary.js" />
+  </ItemGroup>
+
+</Project>
